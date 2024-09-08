@@ -25,6 +25,15 @@ function launchModal() {
 closeBtn.addEventListener("click", closeModal);
 
 function closeModal() {
-  modalbg.style.display = "none";
-}
+  const content = modalbg.querySelector(".content");
+  content.classList.add("modal-close");
+  console.log(content);
 
+  content.setAttribute("disabled", "disabled");
+
+  setTimeout(() => {
+    modalbg.style.display = "none";
+    content.classList.remove("modal-close");
+    content.removeAttribute("disabled");
+  }, 800);
+}
