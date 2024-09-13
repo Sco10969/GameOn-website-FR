@@ -19,6 +19,9 @@ modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 // launch modal form
 function launchModal() {
   modalbg.style.display = "block";
+  setTimeout(() => {
+    document.addEventListener("click", outsideClickListener);
+  }, 800); // Léger délai pour éviter la fermeture immédiate
 }
 
 // close modal
@@ -35,5 +38,18 @@ function closeModal() {
     modalbg.style.display = "none";
     content.classList.remove("modal-close");
     content.removeAttribute("disabled");
+    document.removeEventListener("click", outsideClickListener);
   }, 800);
 }
+
+// Close modal if click outside of it
+function outsideClickListener(event) {
+  if (!modalbg.querySelector(".content").contains(event.target)) {
+    closeModal();
+  }
+}
+
+// Prevent event propagation inside modal
+modalbg.querySelector(".content").addEventListener("click", function(event) {
+  event.stopPropagation();
+});
