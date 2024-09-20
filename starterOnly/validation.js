@@ -50,10 +50,17 @@
 // errorMessage: "Vous devez avoir au moins 18 ans."
 // };
 
- const validateQuantity = {
-     validationFunction: (inputElement) => !isNaN(inputElement.value) && Number(inputElement.value) >= 0,
-     errorMessage: "Veuillez entrer un nombre valide."
- };
+const validateQuantity = {
+    validationFunction: (inputElement) => {
+        if (inputElement.value.trim() === "") {
+            validateQuantity.errorMessage = "Veuillez remplir ce champ.";
+            return false;
+        }
+        const value = Number(inputElement.value);
+        validateQuantity.errorMessage = "Veuillez entrer un nombre valide.";
+        return value >= 0 && value <= 99;
+    },
+};
 
  const validateLocation = {
      validationFunction: () => Array.from(locationInputs).some(input => input.checked),
