@@ -30,20 +30,25 @@
  };
 
  const validateBirthdate = {
-     validationFunction: (inputElement) => {
-         const birthdate = new Date(inputElement.value);
-         const today = new Date();
-         let age = today.getFullYear() - birthdate.getFullYear();
-         const monthDifference = today.getMonth() - birthdate.getMonth();
-
-         if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthdate.getDate())) {
-             age--;
-         }
-
-         return age >= 18;
-     },
-     errorMessage: "Vous devez avoir au moins 18 ans."
+     validationFunction: (inputElement) => inputElement.value.trim() !== "",
+     errorMessage: "Vous devez entrer votre date de naissance."
  };
+
+//  const validateBirthdate = {
+//     validationFunction: (inputElement) => {
+//         const birthdate = new Date(inputElement.value);
+//     const today = new Date();
+//     let age = today.getFullYear() - birthdate.getFullYear();
+//     const monthDifference = today.getMonth() - birthdate.getMonth();
+
+//     if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthdate.getDate())) {
+//         age--;
+//     }
+
+//     return age >= 18;
+// },
+// errorMessage: "Vous devez avoir au moins 18 ans."
+// };
 
  const validateQuantity = {
      validationFunction: (inputElement) => !isNaN(inputElement.value) && Number(inputElement.value) >= 0,
