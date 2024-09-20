@@ -1,31 +1,17 @@
  // DOM elements
+ const form = document.querySelector("form");
  const formData = document.querySelectorAll(".formData");
  const firstNameInput = document.getElementById("first");
  const lastNameInput = document.getElementById("last");
- const form = document.querySelector("form");
-
- // Fonction de validation générique
- function validateInput(inputElement, validations) {
-     const formDataElement = inputElement.closest(".formData");
-     if (validations.find(
-             (validation) => {
-                 if (!validation.validationFunction(inputElement)) {
-                     formDataElement.setAttribute("data-error", validation.errorMessage);
-                     formDataElement.setAttribute("data-error-visible", "true");
-                     return true;
-                 }
-             }
-         )) {
-         return false;
-     }
-     formDataElement.removeAttribute("data-error");
-     formDataElement.removeAttribute("data-error-visible");
-     return true;
- }
+ const emailInput = document.getElementById("email");
+ const birthdateInput = document.getElementById("birthdate");
+ const quantityInput = document.getElementById("quantity");
+ const locationInputs = document.querySelectorAll("input[name='location']");
+ const checkboxInputs = document.querySelectorAll("input[type='checkbox']");
 
  const validateInputLength = {
      validationFunction: (inputElement) => inputElement.value.trim().length >= 2,
-     errorMessage: "Le prénom doit contenir au moins 2 caractères."
+     errorMessage: "Doit contenir au moins 2 caractères."
  }
 
  const validateInputChars = {
@@ -36,9 +22,45 @@
  const validateInputName = [
      validateInputLength,
      validateInputChars
- ]
+ ];
 
- // Tableau des inputs à valider (pour l'instant, le prénom)
+ const validateEmailFormat = {
+     validationFunction: (inputElement) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputElement.value.trim()),
+     errorMessage: "Veuillez saisir une adresse email valide."
+ };
+
+ const validateBirthdate = {
+     validationFunction: (inputElement) => {
+         const birthdate = new Date(inputElement.value);
+         const today = new Date();
+         let age = today.getFullYear() - birthdate.getFullYear();
+         const monthDifference = today.getMonth() - birthdate.getMonth();
+
+         if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthdate.getDate())) {
+             age--;
+         }
+
+         return age >= 18;
+     },
+     errorMessage: "Vous devez avoir au moins 18 ans."
+ };
+
+ const validateQuantity = {
+     validationFunction: (inputElement) => !isNaN(inputElement.value) && Number(inputElement.value) >= 0,
+     errorMessage: "Veuillez entrer un nombre valide."
+ };
+
+ const validateLocation = {
+     validationFunction: () => Array.from(locationInputs).some(input => input.checked),
+     errorMessage: "Veuillez sélectionner un tournoi."
+ };
+
+ const validateCheckboxAccept = {
+     validationFunction: (inputElements) => inputElements[0].checked,
+     errorMessage: "Vous devez accepter les conditions d'utilisation."
+ };
+
+ // Tableau des inputs à valider
  const inputsToValidate = [
      {
          element: firstNameInput,
@@ -47,36 +69,78 @@
      {
          element: lastNameInput,
          validations: validateInputName
+     },
+     {
+         element: emailInput,
+         validations: [validateEmailFormat]
+     },
+     {
+         element: birthdateInput,
+         validations: [validateBirthdate]
+     },
+     {
+         element: quantityInput,
+         validations: [validateQuantity]
+     },
+     {
+         element: locationInputs,
+         validations: [validateLocation]
+     },
+     {
+         element: checkboxInputs,
+         validations: [validateCheckboxAccept]
      }
-
-     // TODO : ajouter la validation de l'email
-     // TODO : ajouter la validation du date de naissance
-     // TODO : ajouter la validation du genre
-     // TODO : ajouter la validation du nombre de tournois
-     // TODO : ajouter la validation sur un des radio buttons
-     // TODO : ajouter la validation sur les checkbox
  ];
 
+// Fonction de validation d'un input
+function validateInput(inputElement, validations) {
+    let isValid = true;
+    const formDataElement = inputElement instanceof NodeList 
+        ? inputElement[0].closest(".formData") 
+        : inputElement.closest(".formData");
+
+    validations.forEach(validation => {
+        if (inputElement instanceof NodeList) {
+            // Pour les radio buttons et checkboxes
+            if (!validation.validationFunction(inputElement)) {
+                formDataElement.setAttribute("data-error", validation.errorMessage);
+                formDataElement.setAttribute("data-error-visible", "true");
+                isValid = false;
+            }
+        } else {
+            if (!validation.validationFunction(inputElement)) {
+                formDataElement.setAttribute("data-error", validation.errorMessage);
+                formDataElement.setAttribute("data-error-visible", "true");
+                isValid = false;
+            }
+        }
+    });
+
+    if (isValid) {
+        formDataElement.removeAttribute("data-error");
+        formDataElement.removeAttribute("data-error-visible");
+    }
+
+    return isValid;
+}
  // TODO : Validation en temps réel
 
  // Validation du formulaire lors de la soumission
  form.addEventListener("submit", function (event) {
-     let isFormValid = true;
+    event.preventDefault();
 
-     // Validation of each input
-     inputsToValidate.forEach(({
-         element,
-         validations,
-     }) => {
-         const isValid = validateInput(element, validations);
-         if (!isValid) {
-             isFormValid = false;
-         }
-     });
+    let isFormValid = true;
 
-     if (!isFormValid) {
-         event.preventDefault(); // Empêche la soumission si la validation échoue
-     } else {
-         // TODO : message de confirmation à mettre en place
-     }
- });
+    // Validation de chaque input
+    inputsToValidate.forEach(({ element, validations }) => {
+        const valid = validateInput(element, validations);
+        if (!valid) {
+            isFormValid = false;
+        }
+    });
+
+    if (isFormValid) {
+        // TODO : message de confirmation à mettre en place
+        form.submit(); // Soumet le formulaire si tout est valide
+    }
+});
