@@ -9,19 +9,19 @@
  const locationInputs = document.querySelectorAll("input[name='location']");
  const checkboxInputs = document.querySelectorAll("input[type='checkbox']");
 
+ const validateInputChars = {
+    validationFunction: (inputElement) => /^[a-zA-Z]+$/.test(inputElement.value.trim()),
+    errorMessage: "Ne doit contenir que des lettres."
+}
+
  const validateInputLength = {
      validationFunction: (inputElement) => inputElement.value.trim().length >= 2,
      errorMessage: "Doit contenir au moins 2 caractères."
  }
 
- const validateInputChars = {
-     validationFunction: (inputElement) => /^[a-zA-Z]+$/.test(inputElement.value.trim()),
-     errorMessage: "Ne doit contenir que des lettres."
- }
-
  const validateInputName = [
-     validateInputLength,
-     validateInputChars
+     validateInputChars,
+     validateInputLength
  ];
 
  const validateEmailFormat = {
@@ -112,19 +112,10 @@ function validateInput(inputElement, validations) {
         : inputElement.closest(".formData");
 
     validations.forEach(validation => {
-        if (inputElement instanceof NodeList) {
-            // Pour les radio buttons et checkboxes
-            if (!validation.validationFunction(inputElement)) {
-                formDataElement.setAttribute("data-error", validation.errorMessage);
-                formDataElement.setAttribute("data-error-visible", "true");
-                isValid = false;
-            }
-        } else {
-            if (!validation.validationFunction(inputElement)) {
-                formDataElement.setAttribute("data-error", validation.errorMessage);
-                formDataElement.setAttribute("data-error-visible", "true");
-                isValid = false;
-            }
+        if (!validation.validationFunction(inputElement)) {
+            formDataElement.setAttribute("data-error", validation.errorMessage);
+            formDataElement.setAttribute("data-error-visible", "true");
+            isValid = false;
         }
     });
 
