@@ -14,8 +14,7 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  /* TODO: change background image */
-  background-image: url("background.png");
+  background-color: #ffffff;
   font-family: var(--font-default);
   font-size: 18px;
   max-width: 1300px;
@@ -98,7 +97,6 @@ img {
   .topnav a.icon {
     float: right;
     display: block;
-    margin-top: -15px;
   }
 } 
 
@@ -160,21 +158,15 @@ main {
 
 .bground {
   display: none;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   z-index: 1;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
+  inset: 0;
   background-color: rgba(26, 39, 156, 0.4);
   overflow: hidden;
 }
-
 .content {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 100%;
   max-width: 590px;
   animation-name: modalopen;
@@ -189,7 +181,7 @@ main {
 
 .location-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
   padding: 10px;
 }
@@ -220,7 +212,7 @@ input {
 }
 .formData[data-error]::after {
   content: attr(data-error);
-  font-size: 0.4em;
+  font-size: 11px;
   color: #e54858;
   display: block;
   margin-top: 7px;
@@ -451,7 +443,7 @@ input[data-error]::after {
   white-space: nowrap;
 }
 .hero-text {
-  width: 146%;
+  width: 100%;
   font-weight: normal;
   margin-top: 57px;
   padding: 0;
@@ -531,22 +523,22 @@ footer {
 @keyframes modalopen {
   from {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.9);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
 }
 
 @keyframes modalclose {
   from {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
   to {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.9);
+    transform: scale(0.9);
   }
 }
 

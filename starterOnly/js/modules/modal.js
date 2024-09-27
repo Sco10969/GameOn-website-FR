@@ -1,29 +1,31 @@
-import { launchModal, closeModal, createOutsideClickListener } from '../script.js';
-
-function initModal() {
-    const modalbg = document.querySelector(".bground");
-    const modalBtn = document.querySelectorAll(".modal-btn");
-    const closeBtn = document.querySelector(".close");
-    const modalContent = modalbg.querySelector(".content");
-
-    const handleCloseModal = () => {
-        closeModal(modalbg, modalContent);
-        document.removeEventListener("click", outsideClickListener);
-    };
-
-    let outsideClickListener;
-
-    modalBtn.forEach((btn) => btn.addEventListener("click", () => {
-        launchModal(modalbg);
-        outsideClickListener = createOutsideClickListener(modalbg, modalContent, handleCloseModal, modalBtn);
-        document.addEventListener("click", outsideClickListener);
-    }));
-
-    closeBtn.addEventListener("click", handleCloseModal);
-
-    modalContent.addEventListener("click", (event) => {
-        event.stopPropagation();
-    });
+function launchModal(modalElement) {
+    modalElement.style.display = "flex";
+    document.body.style.overflow = "hidden";
 }
 
-export { initModal };
+function closeModal(contentElement, callback) {
+    contentElement.classList.add("modal-close");
+    contentElement.setAttribute("disabled", "disabled");
+    callback?.();
+    document.body.style.overflow = "auto";
+}
+
+function resetForm(formElement) {
+    formElement.reset();
+}
+
+function createOutsideClickListener(modalElement, contentElement, closeModalFunc, openModalBtns) {
+    function outsideClickListener(event) {
+        if (
+            modalElement.style.display !== "none" &&
+            !contentElement.contains(event.target) &&
+            !Array.from(openModalBtns).some(btn => btn.contains(event.target))
+        ) {
+            closeModalFunc();
+            document.removeEventListener("click", outsideClickListener);
+        }
+    }
+    return outsideClickListener;
+}
+
+export { launchModal, closeModal, resetForm, createOutsideClickListener };
