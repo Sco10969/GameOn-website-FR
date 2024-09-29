@@ -1,46 +1,58 @@
-const validatorNotEmpty = {
-    validationFunction: (inputElement) => inputElement.value.trim() !== "",
-    errorMessage: "Champ requis."
+const errorMessages = {
+    notEmpty: "Champ requis.",
+    inputChars: "Ne doit contenir que des lettres.",
+    inputLength: "Doit contenir au moins 2 caractères.",
+    emailFormat: "Veuillez saisir une adresse email valide.",
+    quantity: "Veuillez entrer un nombre valide.",
+    location: "Veuillez sélectionner un tournoi.",
+    checkboxAccept: "Vous devez accepter les conditions d'utilisation."
 };
 
-const validatorInputChars = {
-    validationFunction: (inputElement) => /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[-\s][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/.test(inputElement.value.trim()),
-    errorMessage: "Ne doit contenir que des lettres."
-}
-
-const validatorInputLength = {
-    validationFunction: (inputElement) => inputElement.value.trim().length >= 2,
-    errorMessage: "Doit contenir au moins 2 caractères."
-}
-
-const validatorEmailFormat = {
-    validationFunction: (inputElement) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputElement.value.trim()),
-    errorMessage: "Veuillez saisir une adresse email valide."
-};
-
-const validatorQuantity = {
-    validationFunction: (inputElement) => {
-        const value = Number(inputElement.value);
-        return value >= 0 && value <= 99;
+const textValidators = {
+    notEmpty: {
+        validationFunction: (inputElement) => inputElement.value.trim() !== "",
+        errorMessageKey: "notEmpty"
     },
-    errorMessage: "Veuillez entrer un nombre valide."
+    inputChars: {
+        validationFunction: (inputElement) => /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[-\s][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/.test(inputElement.value.trim()),
+        errorMessageKey: "inputChars"
+    },
+    inputLength: {
+        validationFunction: (inputElement) => inputElement.value.trim().length >= 2,
+        errorMessageKey: "inputLength"
+    }
 };
 
-const validatorLocation = {
-    validationFunction: (inputElements) => Array.from(inputElements).some(input => input.checked),
-    errorMessage: "Veuillez sélectionner un tournoi."
+const emailValidators = {
+    emailFormat: {
+        validationFunction: (inputElement) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputElement.value.trim()),
+        errorMessageKey: "emailFormat"
+    }
 };
 
-const validatorCheckboxAccept = {
-    validationFunction: (inputElement) => inputElement.checked,
-    errorMessage: "Vous devez accepter les conditions d'utilisation."
+const numberValidators = {
+    quantity: {
+        validationFunction: (inputElement) => {
+            const value = Number(inputElement.value);
+            return value >= 0 && value <= 99;
+        },
+        errorMessageKey: "quantity"
+    }
 };
 
-const nameValidators = [
-    validatorNotEmpty,
-    validatorInputChars,
-    validatorInputLength
-];
+const radioValidators = {
+    location: {
+        validationFunction: (inputElements) => Array.from(inputElements).some(input => input.checked),
+        errorMessageKey: "location"
+    }
+};
+
+const checkboxValidators = {
+    checkboxAccept: {
+        validationFunction: (inputElement) => inputElement.checked,
+        errorMessageKey: "checkboxAccept"
+    }
+};
 
 function validateInput(inputElement, validations) {
     let isValid = true;
@@ -48,13 +60,15 @@ function validateInput(inputElement, validations) {
         inputElement[0].closest(".formData") :
         inputElement.closest(".formData");
 
-    validations.forEach(validation => {
+    for (const validation of validations) {
         if (!validation.validationFunction(inputElement)) {
-            formDataElement.setAttribute("data-error", validation.errorMessage);
+            const errorMessage = errorMessages[validation.errorMessageKey] || "Erreur de validation.";
+            formDataElement.setAttribute("data-error", errorMessage);
             formDataElement.setAttribute("data-error-visible", "true");
             isValid = false;
+            break;
         }
-    });
+    }
 
     if (isValid) {
         formDataElement.removeAttribute("data-error");
@@ -65,13 +79,10 @@ function validateInput(inputElement, validations) {
 }
 
 export {
-    validatorNotEmpty,
-    validatorInputChars,
-    validatorInputLength,
-    validatorEmailFormat,
-    validatorQuantity,
-    validatorLocation,
-    validatorCheckboxAccept,
-    nameValidators,
+    textValidators,
+    emailValidators,
+    numberValidators,
+    radioValidators,
+    checkboxValidators,
     validateInput
 };

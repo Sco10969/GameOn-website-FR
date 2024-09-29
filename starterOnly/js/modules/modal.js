@@ -1,4 +1,4 @@
-function launchModal(modalElement) {
+function openModal(modalElement) {
     modalElement.style.display = "flex";
     document.body.style.overflow = "hidden";
 }
@@ -14,8 +14,8 @@ function resetForm(formElement) {
     formElement.reset();
 }
 
-function createOutsideClickListener(modalElement, contentElement, closeModalFunc, openModalBtns) {
-    function outsideClickListener(event) {
+function handleOutsideClick(modalElement, contentElement, closeModalFunc, openModalBtns) {
+    const outsideClickListener = (event) => {
         if (
             modalElement.style.display !== "none" &&
             !contentElement.contains(event.target) &&
@@ -24,8 +24,8 @@ function createOutsideClickListener(modalElement, contentElement, closeModalFunc
             closeModalFunc();
             document.removeEventListener("click", outsideClickListener);
         }
-    }
-    return outsideClickListener;
+    };
+    document.addEventListener("click", outsideClickListener);
 }
 
-export { launchModal, closeModal, resetForm, createOutsideClickListener };
+export { openModal, closeModal, resetForm, handleOutsideClick };

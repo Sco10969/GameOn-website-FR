@@ -1,34 +1,30 @@
 import {
-    validatorNotEmpty,
-    validatorEmailFormat,
-    validatorQuantity,
-    validatorLocation,
-    validatorCheckboxAccept,
-    nameValidators,
-    validateInput
-} from './modules/validation.js';
+    textValidators,
+    emailValidators,
+    numberValidators,
+    radioValidators,
+    checkboxValidators,
+    validateInput,
+} from "./modules/validation.js";
 
 import {
-    launchModal,
+    openModal,
     closeModal,
     resetForm,
-    createOutsideClickListener
-} from './modules/modal.js';
-
+    handleOutsideClick,
+} from "./modules/modal.js";
 
 function initNav() {
     const menuBurger = document.getElementById("menuBurger");
-
-    menuBurger.onclick = editNav;
+    menuBurger.onclick = toggleNavigation;
 }
 
-function editNav() {
-    const x = document.getElementById("myTopnav");
-    x.classList.toggle("responsive");
+function toggleNavigation() {
+    const navigation = document.getElementById("myTopnav");
+    navigation.classList.toggle("responsive");
 }
 
 window.onload = () => {
-
     // DOM elements for form validation
     const form = document.querySelector("form");
     const firstNameInput = document.getElementById("first");
@@ -42,70 +38,76 @@ window.onload = () => {
     // DOM elements for modal
     const successMessage = document.querySelector(".success-message");
     const selectedCityElement = document.getElementById("selected-city");
-
     const modalbg = document.querySelector(".bground");
     const modalBtn = document.querySelectorAll(".modal-btn");
     const closeBtn = document.querySelector(".close");
     const modalContent = modalbg.querySelector(".content");
 
     // Tableau des inputs à valider
-    const inputsToValidate = [{
+    const inputsToValidate = [
+        {
             element: firstNameInput,
-            validations: nameValidators
+            validations: [
+                textValidators.notEmpty,
+                textValidators.inputChars,
+                textValidators.inputLength,
+            ],
         },
         {
             element: lastNameInput,
-            validations: nameValidators
+            validations: [
+                textValidators.notEmpty,
+                textValidators.inputChars,
+                textValidators.inputLength,
+            ],
         },
         {
             element: emailInput,
-            validations: [validatorEmailFormat]
+            validations: [emailValidators.emailFormat],
         },
         {
             element: birthdateInput,
-            validations: [validatorNotEmpty]
+            validations: [textValidators.notEmpty],
         },
         {
             element: quantityInput,
-            validations: [validatorNotEmpty, validatorQuantity]
+            validations: [textValidators.notEmpty, numberValidators.quantity],
         },
         {
             element: locationInputs,
-            validations: [validatorLocation],
-            test: "click"
+            validations: [radioValidators.location],
+            test: "click",
         },
         {
             element: checkboxInputs[0],
-            validations: [validatorCheckboxAccept],
-            test: "click"
-        }
+            validations: [checkboxValidators.checkboxAccept],
+            test: "click",
+        },
     ];
 
     initNav();
 
-    const closeAnimation = () => setTimeout(() => {
-        modalbg.style.display = "none";
-        modalContent.classList.remove("modal-close");
-        modalContent.removeAttribute("disabled");
-        resetForm(document.querySelector("form"));
-        form.style.display = "block";
-        successMessage.style.display = "none";
-    }, 800);
-
+    const closeAnimation = () =>
+        setTimeout(() => {
+            modalbg.style.display = "none";
+            modalContent.classList.remove("modal-close");
+            modalContent.removeAttribute("disabled");
+            resetForm(document.querySelector("form"));
+            form.style.display = "block";
+            successMessage.style.display = "none";
+        }, 800);
 
     const handleCloseModal = () => {
         closeModal(modalContent, closeAnimation);
-        document.removeEventListener("click", outsideClickListener);
+        document.removeEventListener("click", handleOutsideClick);
     };
 
-    let outsideClickListener;
-
-    modalBtn.forEach((btn) => btn.addEventListener("click", () => {
-        launchModal(modalbg);
-        outsideClickListener = createOutsideClickListener(modalbg, modalContent, handleCloseModal, modalBtn);
-        document.addEventListener("click", outsideClickListener);
-    }));
-
+    modalBtn.forEach((btn) =>
+        btn.addEventListener("click", () => {
+            openModal(modalbg);
+            handleOutsideClick(modalbg, modalContent, handleCloseModal, modalBtn);
+        })
+    );
     closeBtn.addEventListener("click", handleCloseModal);
 
     modalContent.addEventListener("click", (event) => {
@@ -113,13 +115,9 @@ window.onload = () => {
     });
 
     // Validation en temps réel
-    inputsToValidate.forEach(({
-        element,
-        validations,
-        test
-    }) => {
+    inputsToValidate.forEach(({ element, validations, test }) => {
         if (element instanceof NodeList) {
-            [...element].forEach(el => {
+            [...element].forEach((el) => {
                 el.addEventListener(test ? "click" : "blur", () => {
                     validateInput(element, validations);
                 });
@@ -129,7 +127,7 @@ window.onload = () => {
                 validateInput(element, validations);
             });
         }
-    })
+    });
 
     // Validation du formulaire lors de la soumission
     form.addEventListener("submit", function (event) {
@@ -138,10 +136,7 @@ window.onload = () => {
         let isFormValid = true;
 
         // Validation de chaque input
-        inputsToValidate.forEach(({
-            element,
-            validations
-        }) => {
+        inputsToValidate.forEach(({ element, validations }) => {
             const valid = validateInput(element, validations);
             if (!valid) {
                 isFormValid = false;
@@ -150,16 +145,14 @@ window.onload = () => {
 
         if (isFormValid) {
             // Récupérer la ville sélectionnée
-            const selectedCity = document.querySelector("input[name='location']:checked").value;
+            const selectedCity = document.querySelector(
+                "input[name='location']:checked"
+            ).value;
             selectedCityElement.textContent = selectedCity;
             console.log("Merci ! Votre réservation a été reçue.");
             form.style.display = "none";
             successMessage.style.display = "block";
         }
     });
-
-}
-
-export {
-    editNav
 };
+export { initNav };
