@@ -3,7 +3,7 @@ function openModal(modalElement) {
     modalElement.style.display = "flex";
     document.body.style.overflow = "hidden";
 }
-
+// ISSUE 1 : fermer la modale
 // Fonction pour fermer le modal
 function closeModal(contentElement, callback) {
     contentElement.classList.add("modal-close");
@@ -17,6 +17,7 @@ function resetForm(formElement) {
     formElement.reset();
 }
 
+// ISSUE 1 : ferme la modale si on clique en dehors
 // Fonction pour gérer le clic à l'extérieur du modal
 function handleOutsideClick(modalElement, contentElement, closeModalFunc, openModalBtns) {
     const outsideClickListener = (event) => {

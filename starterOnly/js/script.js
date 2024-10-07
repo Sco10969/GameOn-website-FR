@@ -45,6 +45,7 @@ window.onload = () => {
     const closeBtn = document.querySelector(".close");
     const modalContent = modalbg.querySelector(".content");
 
+    // ISSUE 3
     // Tableau des inputs à valider
     const inputsToValidate = [
         {
@@ -100,6 +101,7 @@ window.onload = () => {
             successMessage.style.display = "none";
         }, 800);
 
+    // ISSUE 1 : fermer la modale
     // Fonction pour gérer la fermeture du modal
     const handleCloseModal = () => {
         closeModal(modalContent, closeAnimation);
@@ -119,6 +121,7 @@ window.onload = () => {
         event.stopPropagation();
     });
 
+    // ISSUE 3
     // Validation en temps réel
     inputsToValidate.forEach(({ element, validations, test }) => {
         if (element instanceof NodeList) {
@@ -140,6 +143,7 @@ window.onload = () => {
 
         let isFormValid = true;
 
+        // ISSUE 3
         // Validation de chaque input
         inputsToValidate.forEach(({ element, validations }) => {
             const valid = validateInput(element, validations);
@@ -148,13 +152,14 @@ window.onload = () => {
             }
         });
 
+        // ISSUE 4: Afficher le message de succès
+        // Si le formulaire est valide, afficher le message de succès
         if (isFormValid) {
             // Récupérer la ville sélectionnée
             const selectedCity = document.querySelector(
                 "input[name='location']:checked"
             ).value;
             selectedCityElement.textContent = selectedCity;
-            console.log("Merci ! Votre réservation a été reçue.");
             form.style.display = "none";
             successMessage.style.display = "block";
         }

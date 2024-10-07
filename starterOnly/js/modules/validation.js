@@ -1,3 +1,4 @@
+// ISSUE 3 : ajout messages d'erreur et de validation
 // Messages d'erreur pour les validations
 const errorMessages = {
     notEmpty: "Champ requis.",
