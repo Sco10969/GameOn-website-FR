@@ -14,18 +14,20 @@ import {
     handleOutsideClick,
 } from "./modules/modal.js";
 
+// Initialisation de la navigation
 function initNav() {
     const menuBurger = document.getElementById("menuBurger");
     menuBurger.onclick = toggleNavigation;
 }
 
+// Fonction pour basculer la navigation
 function toggleNavigation() {
     const navigation = document.getElementById("myTopnav");
     navigation.classList.toggle("responsive");
 }
 
 window.onload = () => {
-    // DOM elements for form validation
+    // Éléments DOM pour la validation du formulaire
     const form = document.querySelector("form");
     const firstNameInput = document.getElementById("first");
     const lastNameInput = document.getElementById("last");
@@ -35,7 +37,7 @@ window.onload = () => {
     const locationInputs = document.querySelectorAll("input[name='location']");
     const checkboxInputs = document.querySelectorAll("input[type='checkbox']");
 
-    // DOM elements for modal
+    // Éléments DOM pour le modal
     const successMessage = document.querySelector(".success-message");
     const selectedCityElement = document.getElementById("selected-city");
     const modalbg = document.querySelector(".bground");
@@ -87,6 +89,7 @@ window.onload = () => {
 
     initNav();
 
+    // Fonction pour gérer l'animation de fermeture du modal
     const closeAnimation = () =>
         setTimeout(() => {
             modalbg.style.display = "none";
@@ -97,11 +100,13 @@ window.onload = () => {
             successMessage.style.display = "none";
         }, 800);
 
+    // Fonction pour gérer la fermeture du modal
     const handleCloseModal = () => {
         closeModal(modalContent, closeAnimation);
         document.removeEventListener("click", handleOutsideClick);
     };
 
+    // Gestion des événements pour l'ouverture et la fermeture du modal
     modalBtn.forEach((btn) =>
         btn.addEventListener("click", () => {
             openModal(modalbg);
@@ -155,4 +160,5 @@ window.onload = () => {
         }
     });
 };
+
 export { initNav };

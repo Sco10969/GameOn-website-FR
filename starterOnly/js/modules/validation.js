@@ -1,3 +1,4 @@
+// Messages d'erreur pour les validations
 const errorMessages = {
     notEmpty: "Champ requis.",
     inputChars: "Ne doit contenir que des lettres.",
@@ -8,6 +9,7 @@ const errorMessages = {
     checkboxAccept: "Vous devez accepter les conditions d'utilisation."
 };
 
+// Validateurs pour les champs de texte
 const textValidators = {
     notEmpty: {
         validationFunction: (inputElement) => inputElement.value.trim() !== "",
@@ -23,6 +25,7 @@ const textValidators = {
     }
 };
 
+// Validateurs pour la saisie de l'email
 const emailValidators = {
     emailFormat: {
         validationFunction: (inputElement) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputElement.value.trim()),
@@ -30,6 +33,7 @@ const emailValidators = {
     }
 };
 
+// Validateurs pour la saisie de la quantité
 const numberValidators = {
     quantity: {
         validationFunction: (inputElement) => {
@@ -40,6 +44,7 @@ const numberValidators = {
     }
 };
 
+// Validateurs pour la sélection du tournoi
 const radioValidators = {
     location: {
         validationFunction: (inputElements) => Array.from(inputElements).some(input => input.checked),
@@ -47,6 +52,7 @@ const radioValidators = {
     }
 };
 
+// Validateurs pour la validation des conditions d'utilisation
 const checkboxValidators = {
     checkboxAccept: {
         validationFunction: (inputElement) => inputElement.checked,
@@ -54,6 +60,7 @@ const checkboxValidators = {
     }
 };
 
+// Fonction pour valider un élément d'entrée
 function validateInput(inputElement, validations) {
     let isValid = true;
     const formDataElement = inputElement instanceof NodeList ?
